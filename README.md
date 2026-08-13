@@ -41,7 +41,7 @@ npx @deepseek-ai/dsh web            # 启动 Web UI
 npx @deepseek-ai/dsh plugin --profile web add github:liuup/dsh-latex
 ```
 
-git 安装拉取的是源码，pnpm 会自动执行包内的 `prepare` 脚本完成构建。pnpm ≥10 默认拒绝运行 git 依赖的 `prepare`，**首次 `add` 会失败**——`dsh` 会打印指引：把 `dsh-latex-tools: true` 加入 profile 的 `pnpm-workspace.yaml`（`allowBuilds` 段），然后重跑上面的命令。生产使用建议 pin 提交：`github:liuup/dsh-latex#<commit-sha>`。
+git 安装拉取的是源码，pnpm 会自动执行包内的 `prepare` 脚本完成构建。pnpm ≥10 默认拒绝运行 git 依赖的 `prepare`，**首次 `add` 会失败**——`dsh` 会打印指引：按提示把对应条目加入 profile 的 `pnpm-workspace.yaml`（`allowBuilds` 段），然后重跑上面的命令。生产使用建议 pin 提交：`github:liuup/dsh-latex#<commit-sha>`。
 
 ### 方式三：npm 发布后（最省事）
 
@@ -49,7 +49,7 @@ git 安装拉取的是源码，pnpm 会自动执行包内的 `prepare` 脚本完
 # 维护者侧：发布
 cd dsh-latex && pnpm build && npm publish
 
-# 用户侧：直接按包名安装
+# 用户侧：直接按包名安装（无需任何额外配置）
 npx @deepseek-ai/dsh plugin --profile web add dsh-latex-tools
 ```
 

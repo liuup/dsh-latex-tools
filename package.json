@@ -18,6 +18,19 @@
     "src",
     "cordis.patch.yml"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liuup/dsh-latex.git"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "latex",
+    "katex",
+    "mathjax",
+    "svg"
+  ],
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
