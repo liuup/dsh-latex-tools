@@ -1,6 +1,6 @@
 /**
  * dsh-latex-tools host half — serves the MathJax es5 tex→svg bundle used by
- * the browser half's SVG export under /latex-tools/mathjax/*. The MathJax
+ * the browser half's SVG export under /dsh-latex-tools/mathjax/*. The MathJax
  * script (~2.5 MB) is fetched lazily on the first export and cached by the
  * browser afterwards, so the always-loaded client bundle stays small and the
  * deployment works fully offline. Install via
@@ -17,13 +17,13 @@ import type { Context } from '@deepseek-ai/cordis'
 import type {} from '@deepseek-ai/dsh-host-webserver'
 
 /** Stable cordis plugin name (matches cordis.patch.yml insert id). */
-export const name = 'latex-tools'
+export const name = 'dsh-latex-tools'
 
 /** Services required before the asset route can be registered. */
 export const inject = ['webServer']
 
 /** Browser-facing base path of the MathJax asset route. */
-export const MATHJAX_PREFIX = '/latex-tools/mathjax'
+export const MATHJAX_PREFIX = '/dsh-latex-tools/mathjax'
 
 const MIME: Record<string, string> = {
   '.js': 'text/javascript; charset=utf-8',
@@ -103,6 +103,6 @@ export function apply(ctx: Context): void {
       path: MATHJAX_PREFIX,
       handler: (req, res) => serveMathJaxAsset(req, res, root),
     }),
-    'latex-tools: mathjax assets',
+    'dsh-latex-tools: mathjax assets',
   )
 }

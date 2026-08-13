@@ -2,7 +2,7 @@
  * dsh-latex-tools build: two outputs, one package.
  *
  * - The node half (lib/index.js, ESM): serves the MathJax es5 bundle under
- *   /latex-tools/mathjax. cordis and the dsh peer packages resolve at runtime
+ *   /dsh-latex-tools/mathjax. cordis and the dsh peer packages resolve at runtime
  *   from the profile tree, so they stay external.
  * - The browser half (lib/client.js): a closure-factory artifact that calls
  *   window.__ModuleLoader__.load({ id, factory }) and resolves platform

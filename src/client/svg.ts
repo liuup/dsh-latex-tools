@@ -9,7 +9,7 @@
  */
 
 /** The MathJax es5 component the host half serves (see src/index.ts). */
-const MATHJAX_SCRIPT_URL = '/latex-tools/mathjax/es5/tex-svg.js'
+const MATHJAX_SCRIPT_URL = '/dsh-latex-tools/mathjax/es5/tex-svg.js'
 
 /** Minimal surface of the MathJax v3 es5 global used here. */
 interface MathJaxApi {
