@@ -1,6 +1,6 @@
 {
   "name": "dsh-latex-tools",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Hover LaTeX formulas in the DeepSeek Harness Web UI to copy the TeX source or export the formula as a standalone SVG.",
   "type": "module",
   "main": "lib/index.js",
