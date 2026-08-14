@@ -1,4 +1,4 @@
-# dsh-latex-tools
+<h1 align="center">dsh-latex-tools</h1>
 
 <p align="center"><a href="./README_en.md">English</a> | 中文</p>
 
@@ -88,6 +88,6 @@ npx @deepseek-ai/dsh web            # 启动 Web UI
 </details>
 
 
-# License
+## License
 
 [MIT](./LICENSE)
