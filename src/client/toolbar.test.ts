@@ -6,6 +6,12 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { installLatexToolbar } from './toolbar.ts'
+import { zh } from './locales.ts'
+
+/** zh-backed translate for the toolbar tests (labels asserted in Chinese). */
+const mockT = ((key: string) => zh[key as keyof typeof zh] ?? key) as (
+  key: string, params?: Record<string, unknown>,
+) => string
 
 /** KaTeX-shaped formula DOM: block display wrapper + inner .katex. */
 function formulaDom(source = 'x^2'): { container: HTMLElement; katex: HTMLElement } {
@@ -36,7 +42,7 @@ let dispose: (() => void) | undefined
 let anchorClick: ReturnType<typeof vi.spyOn> | undefined
 
 beforeEach(() => {
-  dispose = installLatexToolbar()
+  dispose = installLatexToolbar(mockT)
 })
 
 afterEach(() => {

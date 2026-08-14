@@ -4,13 +4,16 @@
  * Pure DOM enhancement, no React coupling: a document-level pointerover/out
  * delegation finds the `.katex` element under the pointer (KaTeX output from
  * ui-primitives — the same DOM the app renders), and a fixed-position pill
- * with "复制 LaTeX" / "导出 SVG" buttons floats above it. Because nothing is
- * attached to individual elements, streaming renders and React re-renders
+ * with the copy/export buttons floats above it. Button labels come from the
+ * harness locale service via a namespace-bound translate function, so the
+ * toolbar follows the UI language (zh/en) and live switches. Because nothing
+ * is attached to individual elements, streaming renders and React re-renders
  * need no bookkeeping. The toolbar hides on scroll, on an outside click, and
  * when the pointer leaves the formula (with a grace period so moving onto
  * the bar itself does not flicker it away).
  */
 
+import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import { copyText, texSourceOf } from './copy.ts'
 import { exportFormulaSvg } from './svg.ts'
 
@@ -18,12 +21,6 @@ const STYLE_ID = 'dsh-latex-tools-style'
 const BAR_ID = 'dsh-latex-tools-bar'
 const PLUGIN_ID = 'dsh-latex-tools'
 
-const COPY_LABEL = '复制 LaTeX'
-const SVG_LABEL = '导出 SVG'
-const COPIED_LABEL = '已复制'
-const SVG_BUSY_LABEL = '渲染中…'
-const SVG_DONE_LABEL = '已导出'
-const FAILED_LABEL = '失败'
 const HIDE_GRACE_MS = 250
 // Synthetic pointer streams (automation, some browser drivers) dispatch
 // pointerout without a matching pointerover, leaving relatedTarget null.
@@ -74,6 +71,8 @@ let bar: Toolbar | undefined
 let activeKatex: HTMLElement | undefined
 let hideTimer: number | undefined
 let restoreTimer: number | undefined
+/** Namespace-bound translate installed by the plugin entry; labels read through it. */
+let translate: TranslateNS<'dsh-latex-tools'> = (key) => key
 
 /** Inject the toolbar stylesheet once (tagged for the loader's style bookkeeping). */
 function injectStyles(): void {
@@ -94,11 +93,11 @@ function ensureBar(): Toolbar {
   el.setAttribute('role', 'toolbar')
   const copyButton = document.createElement('button')
   copyButton.type = 'button'
-  copyButton.textContent = COPY_LABEL
+  copyButton.textContent = translate('copy')
   copyButton.addEventListener('click', onCopyClick)
   const svgButton = document.createElement('button')
   svgButton.type = 'button'
-  svgButton.textContent = SVG_LABEL
+  svgButton.textContent = translate('svg')
   svgButton.addEventListener('click', onSvgClick)
   el.append(copyButton, svgButton)
   document.body.append(el)
@@ -109,9 +108,9 @@ function ensureBar(): Toolbar {
 /** Reset button labels so a previous flash feedback does not linger. */
 function resetButtons(): void {
   if (bar === undefined) return
-  bar.copyButton.textContent = COPY_LABEL
+  bar.copyButton.textContent = translate('copy')
   bar.copyButton.dataset.state = ''
-  bar.svgButton.textContent = SVG_LABEL
+  bar.svgButton.textContent = translate('svg')
   bar.svgButton.dataset.state = ''
 }
 
@@ -174,11 +173,11 @@ function onCopyClick(): void {
   const source = activeKatex === undefined ? undefined : texSourceOf(activeKatex)
   if (button === undefined) return
   if (source === undefined) {
-    flash(button, FAILED_LABEL, 'error')
+    flash(button, translate('failed'), 'error')
     return
   }
   void copyText(source).then((ok) => {
-    flash(button, ok ? COPIED_LABEL : FAILED_LABEL, ok ? 'done' : 'error')
+    flash(button, ok ? translate('copyDone') : translate('failed'), ok ? 'done' : 'error')
   })
 }
 
@@ -189,16 +188,16 @@ function onSvgClick(): void {
   const source = katex === undefined ? undefined : texSourceOf(katex)
   if (button === undefined) return
   if (source === undefined) {
-    flash(button, FAILED_LABEL, 'error')
+    flash(button, translate('failed'), 'error')
     return
   }
   const display = katex !== undefined && katex.closest('.katex-display') !== null
-  flash(button, SVG_BUSY_LABEL, 'busy')
+  flash(button, translate('svgBusy'), 'busy')
   exportFormulaSvg(source, display).then(
-    () => flash(button, SVG_DONE_LABEL, 'done'),
+    () => flash(button, translate('svgDone'), 'done'),
     (error: unknown) => {
       console.error('[dsh-latex-tools] svg export failed:', error)
-      flash(button, FAILED_LABEL, 'error')
+      flash(button, translate('failed'), 'error')
     },
   )
 }
@@ -255,9 +254,11 @@ function onPointerDown(event: PointerEvent): void {
 
 /**
  * Mount the formula hover toolbar on the page.
+ * @param t - namespace-bound translate for the toolbar labels (zh/en).
  * @returns the disposer (unmounts the toolbar and its listeners).
  */
-export function installLatexToolbar(): () => void {
+export function installLatexToolbar(t: TranslateNS<'dsh-latex-tools'>): () => void {
+  translate = t
   injectStyles()
   document.addEventListener('pointerover', onPointerOver, true)
   document.addEventListener('pointerout', onPointerOut, true)
@@ -278,4 +279,13 @@ export function installLatexToolbar(): () => void {
     activeKatex = undefined
     document.getElementById(STYLE_ID)?.remove()
   }
+}
+
+/**
+ * Refresh the visible toolbar's labels after a locale switch (the locale
+ * service bumps its snapshot on dictionary registrations too, so this stays
+ * idempotent and cheap).
+ */
+export function refreshToolbarLabels(): void {
+  resetButtons()
 }
