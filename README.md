@@ -19,6 +19,14 @@
 
 ## 安装
 
+1. 官方插件市场安装 (推荐): 在DeepSeek Harness的左侧Plugins选项中, 仅需填入`dsh-latex-tools`即可安装.
+
+<p align="center">
+  <img src="./images/image_2.png" alt="dsh-latex-tools plugin list" width="950" />
+</p>
+
+<details>
+<summary>2. 使用命令行安装</summary>
 要求：安装 Node.js，然后直接用官方 npm 方式运行（无需全局安装）：
 
 ```sh
@@ -39,17 +47,18 @@ npx @deepseek-ai/dsh plugin --profile web add dsh-latex-tools
 
 ```sh
 npx @deepseek-ai/dsh --profile web --dump-config   # 应看到 "# == dsh-latex-tools" 层
-# 浏览器检查：
-#   /plugins/dsh-latex-tools/client.js   —— browser half 的 bundle
-#   /dsh-latex-tools/mathjax/es5/tex-svg.js  —— SVG 导出用的 MathJax（约 2.1 MB）
 ```
-
-<p align="center">
-  <img src="./images/image_2.png" alt="dsh-latex-tools plugin list" width="550" />
-</p>
+</details>
 
 
-### 卸载
+
+
+
+## 卸载与二次开发
+
+<details>
+<summary>卸载</summary>
+
 
 ```sh
 npx @deepseek-ai/dsh plugin --profile web remove dsh-latex-tools
@@ -57,8 +66,12 @@ npx @deepseek-ai/dsh plugin --profile web remove dsh-latex-tools
 
 从 `web` profile 移除插件依赖与配置层，重启 Web UI 后生效。
 
+</details>
+
+
+
 <details>
-<summary><b>开发</b>（构建、测试、GitHub/源码安装，点击展开）</summary>
+<summary>二次开发（构建、测试、GitHub/源码安装，点击展开）</summary>
 
 ```sh
 pnpm install
